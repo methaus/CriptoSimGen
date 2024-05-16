@@ -23,7 +23,7 @@ const base64Chars = Array.from(Array(26), (_, i) => String.fromCharCode(65 + i))
 //Basic encryption of replaced duplicate pairs supports only 1 to 7 symbols
 const baseSymbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
 const basicAlphabetTraslator = newAlphabet(base64Chars, baseSymbols);
-console.log(basicAlphabetTraslator)
+
 //Basic second order encryption of periods inverted by key
 const encodeCSG = (alphabetTranslator, msg, password, spacer = '&') => {
     const baseAlphabet = Object.keys(alphabetTranslator)
@@ -53,3 +53,29 @@ const password = "password"
 console.log("password:", password)
 const msgEncoded = encodeCSG(basicAlphabetTraslator, message, password)
 console.log("encoded:", msgEncoded)
+
+const decodeCSG = (alphabetTranslatorBase, msg, password, spacer) => {
+    const baseAlphabet = Object.keys(alphabetTranslatorBase)
+    let symbolsOrder = baseAlphabet.map(key => { return alphabetTranslatorBase[key] })
+    let passwordTranslated = Array()
+    let msgDecoded = Array()
+
+    for (let i = 0; i < password.length; i++) {
+        let posInA = baseAlphabet.indexOf(password[i]) //Position in base Alphabet
+        //Invert position of periods [posInA ... end] and [start ... posInA]
+        symbolsOrder = symbolsOrder.slice(posInA).concat(symbolsOrder.slice(0, posInA))
+
+        passwordTranslated.push(password[i])
+    }
+    msgDecoded = msgDecoded.concat(passwordTranslated)
+    let finalAlphabet = {}; for (let i = 0; i < baseAlphabet.length; i++) finalAlphabet[symbolsOrder[i]] = baseAlphabet[i]
+
+    msg = msg.split(spacer)
+    for (let i = password.length; i < msg.length; i++) {
+        if (msg[i] != '')
+            msgDecoded.push(finalAlphabet[msg[i]])
+    }
+    return msgDecoded.join('')
+}
+const msgDecoded = decodeCSG(basicAlphabetTraslator, msgEncoded, password, "&")
+console.log("Decoded:", msgDecoded)

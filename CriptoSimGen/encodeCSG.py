@@ -53,3 +53,29 @@ password = "password"
 print("password:", password)
 msgEncoded = encodeCSG(basicAlphabetTraslator, message, password)
 print("encoded:", msgEncoded)
+
+def decodeCSG(alphabetTranslatorBase: dict, msg: str, password: str, spacer: str):
+    baseAlphabet = tuple(alphabetTranslatorBase.keys())
+    symbolsOrder = list(alphabetTranslatorBase.values())
+    passwordTranslated = list()
+    msgDecoded = list()
+
+    for char in password:
+        posInA = baseAlphabet.index(char) #Position in base Alphabet
+        #Invert position of periods [posInA ... end] and [start ... posInA]
+        symbolsOrder[posInA:], symbolsOrder[:posInA] = symbolsOrder[:posInA], symbolsOrder[posInA:]
+
+        passwordTranslated.append(char)
+
+    msgDecoded.extend(passwordTranslated)
+    finalAlphabet = { symbolsOrder[i]: baseAlphabet[i] for i in range(len(baseAlphabet)) }
+    
+    msg = msg.split(spacer)
+    for char in msg[len(password):]:
+        if char != '':
+            msgDecoded.append(finalAlphabet[char])
+
+    return ''.join(msgDecoded)
+
+msgDecoded = decodeCSG(basicAlphabetTraslator, msgEncoded, password, "&")
+print("Decoded:", msgDecoded)
