@@ -28,17 +28,13 @@ const basicAlphabetTraslator = newAlphabet(base64Chars, baseSymbols);
 const encodeCSG = (alphabetTranslator, msg, password, spacer = '&') => {
     const baseAlphabet = Object.keys(alphabetTranslator)
     let symbolsOrder = baseAlphabet.map(key => { return alphabetTranslator[key] })
-    let passwordTranslated = Array()
     let msgEncoded = Array()
 
     for (let i = 0; i < password.length; i++) {
         let posInA = baseAlphabet.indexOf(password[i]) //Position in base Alphabet
         //Invert position of periods [posInA ... end] and [start ... posInA]
         symbolsOrder = symbolsOrder.slice(posInA).concat(symbolsOrder.slice(0, posInA))
-
-        passwordTranslated.push(alphabetTranslator[password[i]] + spacer)
     }
-    msgEncoded = msgEncoded.concat(passwordTranslated)
     let finalAlphabet = {}; for (let i = 0; i < baseAlphabet.length; i++) finalAlphabet[baseAlphabet[i]] = symbolsOrder[i]
     
     for (let i = 0; i < msg.length; i++) {
@@ -57,21 +53,17 @@ console.log("encoded:", msgEncoded)
 const decodeCSG = (alphabetTranslatorBase, msg, password, spacer) => {
     const baseAlphabet = Object.keys(alphabetTranslatorBase)
     let symbolsOrder = baseAlphabet.map(key => { return alphabetTranslatorBase[key] })
-    let passwordTranslated = Array()
     let msgDecoded = Array()
 
     for (let i = 0; i < password.length; i++) {
         let posInA = baseAlphabet.indexOf(password[i]) //Position in base Alphabet
         //Invert position of periods [posInA ... end] and [start ... posInA]
         symbolsOrder = symbolsOrder.slice(posInA).concat(symbolsOrder.slice(0, posInA))
-
-        passwordTranslated.push(password[i])
     }
-    msgDecoded = msgDecoded.concat(passwordTranslated)
     let finalAlphabet = {}; for (let i = 0; i < baseAlphabet.length; i++) finalAlphabet[symbolsOrder[i]] = baseAlphabet[i]
 
     msg = msg.split(spacer)
-    for (let i = password.length; i < msg.length; i++) {
+    for (let i = 0; i < msg.length; i++) {
         if (msg[i] != '')
             msgDecoded.push(finalAlphabet[msg[i]])
     }

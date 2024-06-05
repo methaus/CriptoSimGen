@@ -28,7 +28,6 @@ basicAlphabetTraslator = newAlphabet(base64Chars, baseSymbols)
 def encodeCSG(alphabetTranslator: dict, msg: str, password: str, spacer: str = '&'):
     baseAlphabet = tuple(alphabetTranslator.keys())
     symbolsOrder = list(alphabetTranslator.values())
-    passwordTranslated = list()
     msgEncoded = list()
 
     for char in password:
@@ -36,9 +35,6 @@ def encodeCSG(alphabetTranslator: dict, msg: str, password: str, spacer: str = '
         #Invert position of periods [posInA ... end] and [start ... posInA]
         symbolsOrder[posInA:], symbolsOrder[:posInA] = symbolsOrder[:posInA], symbolsOrder[posInA:]
 
-        passwordTranslated.append(alphabetTranslator[char] + spacer)
-
-    msgEncoded.extend(passwordTranslated)
     finalAlphabet = { baseAlphabet[i]: symbolsOrder[i] for i in range(len(baseAlphabet)) }
     
     for char in msg:
@@ -57,7 +53,6 @@ print("encoded:", msgEncoded)
 def decodeCSG(alphabetTranslatorBase: dict, msg: str, password: str, spacer: str):
     baseAlphabet = tuple(alphabetTranslatorBase.keys())
     symbolsOrder = list(alphabetTranslatorBase.values())
-    passwordTranslated = list()
     msgDecoded = list()
 
     for char in password:
@@ -65,13 +60,10 @@ def decodeCSG(alphabetTranslatorBase: dict, msg: str, password: str, spacer: str
         #Invert position of periods [posInA ... end] and [start ... posInA]
         symbolsOrder[posInA:], symbolsOrder[:posInA] = symbolsOrder[:posInA], symbolsOrder[posInA:]
 
-        passwordTranslated.append(char)
-
-    msgDecoded.extend(passwordTranslated)
     finalAlphabet = { symbolsOrder[i]: baseAlphabet[i] for i in range(len(baseAlphabet)) }
-    
+
     msg = msg.split(spacer)
-    for char in msg[len(password):]:
+    for char in msg:
         if char != '':
             msgDecoded.append(finalAlphabet[char])
 
