@@ -1,20 +1,20 @@
 #Get standard ASCII values
 import string
 #Basic first order encryption of replaced duplicate pairs 
-def newAlphabet(baseAlphabet: list, symbolsList: list):
-    newAlphabet = { char: None for char in baseAlphabet }
+def alphabetMatch(baseAlphabet: list, symbolsList: list):
+    alphabetMatch = { char: None for char in baseAlphabet }
     prevChar = None
     
     for newChar in symbolsList:
         for i in range(len(baseAlphabet)):
-            if newAlphabet[baseAlphabet[i]] is None:
-                newAlphabet[baseAlphabet[i]] = str(newChar * (i + 1))
+            if alphabetMatch[baseAlphabet[i]] is None:
+                alphabetMatch[baseAlphabet[i]] = str(newChar * (i + 1))
             else:
-                newAlphabet[baseAlphabet[i]] = newAlphabet[baseAlphabet[i]].replace(prevChar * 2, newChar)
+                alphabetMatch[baseAlphabet[i]] = alphabetMatch[baseAlphabet[i]].replace(prevChar * 2, newChar)
 
         prevChar = newChar
 
-    return newAlphabet
+    return alphabetMatch
 
     #Alphabet Traslator output
 #List base64 normal characters
@@ -22,23 +22,23 @@ base64Chars = list(string.ascii_uppercase + string.ascii_lowercase + string.digi
 #Generic symbols from 1 to "n"
 #Basic encryption of replaced duplicate pairs supports only 1 to 7 symbols
 baseSymbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] 
-basicAlphabetTraslator = newAlphabet(base64Chars, baseSymbols)
+basicNewAlphabetMatch = alphabetMatch(base64Chars, baseSymbols)
 
-#Basic second order encryption of periods inverted by key
-def encodeCSG(alphabetTranslator: dict, msg: str, password: str, spacer: str = '&'):
-    baseAlphabet = tuple(alphabetTranslator.keys())
-    symbolsOrder = list(alphabetTranslator.values())
+#Basic second order encryption of periods opposed by key
+def encodeCSG(baseAlphabetMatch: dict, msg: str, password: str, spacer: str = '&'):
+    baseAlphabet = tuple(baseAlphabetMatch.keys())
+    symbolsOrder = list(baseAlphabetMatch.values())
     msgEncoded = list()
 
     for char in password:
         posInA = baseAlphabet.index(char) #Position in base Alphabet
-        #Invert position of periods [posInA ... end] and [start ... posInA]
-        symbolsOrder[posInA:], symbolsOrder[:posInA] = symbolsOrder[:posInA], symbolsOrder[posInA:]
+        #Invert position of [posInA ... end] and [start ... posInA] & oppose [posInA ... end] to [end ... posInA]
+        symbolsOrder[posInA:], symbolsOrder[:posInA] = symbolsOrder[:posInA], list(reversed(symbolsOrder[posInA:]))
 
-    finalAlphabet = { baseAlphabet[i]: symbolsOrder[i] for i in range(len(baseAlphabet)) }
-    
+    finalAlphabetMatch = { baseAlphabet[i]: symbolsOrder[i] for i in range(len(baseAlphabet)) }
+
     for char in msg:
-        msgEncoded.append(finalAlphabet[char] + spacer)
+        msgEncoded.append(finalAlphabetMatch[char] + spacer)
 
     return ''.join(msgEncoded)
 
@@ -47,27 +47,27 @@ message = "mensagem"
 print("message:", message)
 password = "password"
 print("password:", password)
-msgEncoded = encodeCSG(basicAlphabetTraslator, message, password)
+msgEncoded = encodeCSG(basicNewAlphabetMatch, message, password)
 print("encoded:", msgEncoded)
 
-def decodeCSG(alphabetTranslatorBase: dict, msg: str, password: str, spacer: str):
-    baseAlphabet = tuple(alphabetTranslatorBase.keys())
-    symbolsOrder = list(alphabetTranslatorBase.values())
+def decodeCSG(baseAlphabetMatch: dict, msg: str, password: str, spacer: str):
+    baseAlphabet = tuple(baseAlphabetMatch.keys())
+    symbolsOrder = list(baseAlphabetMatch.values())
     msgDecoded = list()
 
     for char in password:
         posInA = baseAlphabet.index(char) #Position in base Alphabet
-        #Invert position of periods [posInA ... end] and [start ... posInA]
-        symbolsOrder[posInA:], symbolsOrder[:posInA] = symbolsOrder[:posInA], symbolsOrder[posInA:]
+        #Invert position of [posInA ... end] and [start ... posInA] & oppose [posInA ... end] to [end ... posInA]
+        symbolsOrder[posInA:], symbolsOrder[:posInA] = symbolsOrder[:posInA], list(reversed(symbolsOrder[posInA:]))
 
-    finalAlphabet = { symbolsOrder[i]: baseAlphabet[i] for i in range(len(baseAlphabet)) }
+    finalAlphabetMatch = { symbolsOrder[i]: baseAlphabet[i] for i in range(len(baseAlphabet)) }
 
     msg = msg.split(spacer)
     for char in msg:
         if char != '':
-            msgDecoded.append(finalAlphabet[char])
+            msgDecoded.append(finalAlphabetMatch[char])
 
     return ''.join(msgDecoded)
 
-msgDecoded = decodeCSG(basicAlphabetTraslator, msgEncoded, password, "&")
+msgDecoded = decodeCSG(basicNewAlphabetMatch, msgEncoded, password, "&")
 print("Decoded:", msgDecoded)
