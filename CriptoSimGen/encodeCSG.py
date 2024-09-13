@@ -1,5 +1,3 @@
-#Get standard ASCII values
-import string
 #Basic first order encryption of replaced duplicate pairs 
 def alphabetMatch(baseAlphabet: list, symbolsList: list):
     alphabetMatch = { char: None for char in baseAlphabet }
@@ -17,12 +15,12 @@ def alphabetMatch(baseAlphabet: list, symbolsList: list):
     return alphabetMatch
 
     #Alphabet Traslator output
-#List base64 normal characters
-base64Chars = list(string.ascii_uppercase + string.ascii_lowercase + string.digits + '+' + '/')
+#List of common reading character set
+baseChars = ["a", "b", "c", "d", "e", "f"]
 #Generic symbols from 1 to "n"
-#Basic encryption of replaced duplicate pairs supports only 1 to 7 symbols
-baseSymbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] 
-basicNewAlphabetMatch = alphabetMatch(base64Chars, baseSymbols)
+baseSymbols = ['a', 'b', 'c'] 
+baseAlphabetMatch = alphabetMatch(baseChars, baseSymbols)
+print("baseAlphabetMatch:", baseAlphabetMatch)
 
 #Basic second order encryption of periods opposed by key
 def encodeCSG(baseAlphabetMatch: dict, msg: str, password: str, spacer: str = '&'):
@@ -36,6 +34,7 @@ def encodeCSG(baseAlphabetMatch: dict, msg: str, password: str, spacer: str = '&
         symbolsOrder[posInA:], symbolsOrder[:posInA] = symbolsOrder[:posInA], list(reversed(symbolsOrder[posInA:]))
 
     finalAlphabetMatch = { baseAlphabet[i]: symbolsOrder[i] for i in range(len(baseAlphabet)) }
+    print(finalAlphabetMatch)
 
     for char in msg:
         msgEncoded.append(finalAlphabetMatch[char] + spacer)
@@ -43,11 +42,12 @@ def encodeCSG(baseAlphabetMatch: dict, msg: str, password: str, spacer: str = '&
     return ''.join(msgEncoded)
 
     #Encode with password output demonstrative
-message = "mensagem"
+message = "abcdf"
 print("message:", message)
-password = "password"
+password = "c"
 print("password:", password)
-msgEncoded = encodeCSG(basicNewAlphabetMatch, message, password)
+print("newAlphabetMatch:")
+msgEncoded = encodeCSG(baseAlphabetMatch, message, password)
 print("encoded:", msgEncoded)
 
 def decodeCSG(baseAlphabetMatch: dict, msg: str, password: str, spacer: str):
@@ -69,5 +69,5 @@ def decodeCSG(baseAlphabetMatch: dict, msg: str, password: str, spacer: str):
 
     return ''.join(msgDecoded)
 
-msgDecoded = decodeCSG(basicNewAlphabetMatch, msgEncoded, password, "&")
+msgDecoded = decodeCSG(baseAlphabetMatch, msgEncoded, password, "&")
 print("Decoded:", msgDecoded)
