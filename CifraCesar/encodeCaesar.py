@@ -26,8 +26,8 @@ print("encoded:", msgEncoded)
 def bruteForceDecode(msg: str):
     bruteForceResult = dict()
 
-    for key in range(26):
-        bruteForceResult[25 - key] = encondeCaesar(msg, key)
+    for key in range(len(alphabet)):
+        bruteForceResult[len(alphabet) - key] = encondeCaesar(msg, key)
 
 
     return bruteForceResult

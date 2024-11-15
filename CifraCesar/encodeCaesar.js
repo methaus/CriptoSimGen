@@ -26,8 +26,8 @@ console.log("encoded:", msgEncoded)
 bruteForceDecode = (msg) => {
     bruteForceResult = Array()
 
-    for (let key = 0; key < 26; key++) {
-        bruteForceResult[25 - key] = encondeCaesar(msg, key)
+    for (let key = 0; key < alphabet.length; key++) {
+        bruteForceResult[alphabet.length - key] = encondeCaesar(msg, key)
     }
 
     return bruteForceResult
