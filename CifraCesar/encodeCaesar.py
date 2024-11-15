@@ -9,7 +9,7 @@ def encondeCaesar(msg: str, key: int = 3):
 
     for char in msg:
         charIndexInAlphabet = alphabet.index(char)
-        charIndexInAlphabetPlusKey = (charIndexInAlphabet + key) % (len(alphabet) - 1 - 1) #Alphabet limit size for 0 -> 25 = 26 - 1 (key1 = no jump) - 1 (start in 0 not 1)
+        charIndexInAlphabetPlusKey = (charIndexInAlphabet + key) % len(alphabet) #Alphabet limit size for 0 -> 25 = 26 - 1 (key1 = no jump) - 1 (start in 0 not 1)
 
         msgEncoded.append(alphabet[charIndexInAlphabetPlusKey])
 

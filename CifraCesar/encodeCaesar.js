@@ -9,7 +9,7 @@ encondeCaesar = (msg, key = 3) => {
 
     for (let index = 0; index < msg.length; index++) {
         let charIndexInAlphabet = alphabet.indexOf(msg[index])
-        let charIndexInAlphabetPlusKey = (charIndexInAlphabet + key) % (alphabet.length - 1 - 1) //Alphabet limit size for 0 -> 25 = 26 - 1 (key1 = no jump) - 1 (start in 0 not 1)
+        let charIndexInAlphabetPlusKey = (charIndexInAlphabet + key) % alphabet.length //Alphabet limit size for 0 -> 25 = 26 - 1 (key1 = no jump) - 1 (start in 0 not 1)
 
         msgEncoded.push(alphabet[charIndexInAlphabetPlusKey])
     }
